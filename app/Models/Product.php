@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,7 +14,8 @@ class Product extends Model
 
     public function __construct()
     {
-        $this->products = [
+
+        $this->products = collect([
             [
             "id" => 1,
             "nome" => "iPhone 13",
@@ -84,8 +86,39 @@ class Product extends Model
             "categorias" => ["Eletrônicos", "Câmeras"],
             "estoque" => 22
         ]
-        ];
+        ]);
     }
+
+    public function getAll()
+    {
+        return $this->products;
+    }
+
+    public function getById($id)
+    {
+        return $this->products->firstWhere('id', $id);
+    }
+
+    public function getWithLowStock()
+    {
+         $filtered = $this->products->filter(function($product){
+            return $product['estoque'] < 20;
+        });
+
+        return $filtered;
+
+    }
+
+    // public function getByCategory($palavraChave)
+    // {
+
+    //     return $this->products->filter(function ($product) use ($palavraChave) {
+    //         return collect($product['categorias'])->contains(function ($categoria) use ($palavraChave) {
+    //             return stripos($categoria, $palavraChave) !== false; // Verifica se a categoria contém a palavra-chave (case-insensitive)
+    //         });
+    //     });
+
+    // }
 
 
 }
